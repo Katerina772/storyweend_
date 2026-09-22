@@ -1,0 +1,18 @@
+{
+  "name": "worldbuilding-server",
+  "version": "0.1.0",
+  "description": "Backend API для платформи проєктування вигаданих світів",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
+  },
+  "keywords": [
+    "worldbuilding",
+    "express",
+    "api"
+  ],
+  "author": "",
+  "license": "ISC"
+}
