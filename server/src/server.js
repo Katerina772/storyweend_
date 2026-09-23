@@ -1,3 +1,8 @@
+// Дозволяє JSON.stringify серіалізувати BigInt як рядок
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
+
 import dotenv from "dotenv";
 dotenv.config();
 
