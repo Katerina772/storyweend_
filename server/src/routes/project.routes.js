@@ -1,0 +1,42 @@
+import { Router } from "express";
+import * as projectController from "../controllers/project.controller.js";
+import * as memberController from "../controllers/projectMember.controller.js";
+import { requireAuth } from "../middleware/auth.middleware.js";
+import { requireProjectRole } from "../middleware/projectRole.middleware.js";
+
+const router = Router();
+
+// Усі роути проєктів потребують автентифікації
+router.use(requireAuth);
+
+// Проєкти
+router.post("/", projectController.create);
+router.get("/mine", projectController.listMine);
+router.get("/shared", projectController.listShared);
+router.get("/:id", projectController.getOne);
+router.put("/:id", requireProjectRole("EDITOR"), projectController.update);
+router.delete("/:id", requireProjectRole("OWNER"), projectController.remove);
+
+// Учасники
+router.get(
+  "/:projectId/members",
+  requireProjectRole("VIEWER"),
+  memberController.list,
+);
+router.post(
+  "/:projectId/members",
+  requireProjectRole("OWNER"),
+  memberController.add,
+);
+router.put(
+  "/:projectId/members/:memberId",
+  requireProjectRole("OWNER"),
+  memberController.updateRole,
+);
+router.delete(
+  "/:projectId/members/:memberId",
+  requireProjectRole("OWNER"),
+  memberController.remove,
+);
+
+export default router;

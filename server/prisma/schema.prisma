@@ -18,9 +18,48 @@ model User {
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
   @@map("users")
+
+  ownedProjects   Project[]       @relation("ProjectOwner")
+  projectMembers  ProjectMember[]
 }
 
 enum SystemRole {
   USER
   ADMIN
+}
+
+model Project {
+  id          BigInt   @id @default(autoincrement())
+  ownerId     BigInt   @map("owner_id")
+  name        String   @db.VarChar(150)
+  description String?  @db.Text
+  coverImage  String?  @map("cover_image") @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  owner   User            @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members ProjectMember[]
+
+  @@map("projects")
+}
+
+model ProjectMember {
+  id        BigInt      @id @default(autoincrement())
+  projectId BigInt      @map("project_id")
+  userId    BigInt      @map("user_id")
+  role      ProjectRole @default(VIEWER)
+  joinedAt  DateTime    @default(now()) @map("joined_at")
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@map("project_members")
+}
+
+enum ProjectRole {
+  OWNER
+  EDITOR
+  AUTHOR
+  VIEWER
 }
