@@ -21,6 +21,9 @@ model User {
 
   ownedProjects   Project[]       @relation("ProjectOwner")
   projectMembers  ProjectMember[]
+  createdCharacters Character[]
+
+  createdLocations Location[]
 }
 
 enum SystemRole {
@@ -41,6 +44,10 @@ model Project {
   members ProjectMember[]
 
   @@map("projects")
+
+  characters Character[]
+
+  locations Location[]
 }
 
 model ProjectMember {
@@ -62,4 +69,70 @@ enum ProjectRole {
   EDITOR
   AUTHOR
   VIEWER
+}
+
+model Character {
+  id          BigInt    @id @default(autoincrement())
+  projectId   BigInt    @map("project_id")
+  name        String    @db.VarChar(100)
+  portrait    String?   @db.VarChar(255)
+  description String?   @db.Text
+  biography   String?   @db.Text
+  role        String?   @db.VarChar(50)
+  alignment   Alignment @default(NEUTRAL)
+  createdBy   BigInt    @map("created_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  author  User    @relation(fields: [createdBy], references: [id])
+
+  @@index([projectId])
+  @@map("characters")
+
+  locations CharacterLocation[]
+}
+
+enum Alignment {
+  POSITIVE
+  NEGATIVE
+  NEUTRAL
+}
+
+model Location {
+  id          BigInt   @id @default(autoincrement())
+  projectId   BigInt   @map("project_id")
+  parentId    BigInt?  @map("parent_id")
+  name        String   @db.VarChar(100)
+  type        String?  @db.VarChar(50)
+  population  Int?
+  image       String?  @db.VarChar(255)
+  description String?  @db.Text
+  history     String?  @db.Text
+  createdBy   BigInt   @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  project            Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  author             User                @relation(fields: [createdBy], references: [id])
+  parent             Location?           @relation("LocationHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children           Location[]          @relation("LocationHierarchy")
+  characterLocations CharacterLocation[]
+
+  @@index([projectId])
+  @@index([parentId])
+  @@map("locations")
+}
+
+model CharacterLocation {
+  id          BigInt  @id @default(autoincrement())
+  characterId BigInt  @map("character_id")
+  locationId  BigInt  @map("location_id")
+  type        String? @db.VarChar(50)
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  location  Location  @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@unique([characterId, locationId, type])
+  @@map("character_locations")
 }

@@ -3,6 +3,8 @@ import * as projectController from "../controllers/project.controller.js";
 import * as memberController from "../controllers/projectMember.controller.js";
 import { requireAuth } from "../middleware/auth.middleware.js";
 import { requireProjectRole } from "../middleware/projectRole.middleware.js";
+import characterRoutes from "./character.routes.js";
+import locationRoutes from "./location.routes.js";
 
 const router = Router();
 
@@ -38,5 +40,9 @@ router.delete(
   requireProjectRole("OWNER"),
   memberController.remove,
 );
+
+// Персонажі всередині проєкту
+router.use("/:projectId/characters", characterRoutes);
+router.use("/:projectId/locations", locationRoutes);
 
 export default router;
