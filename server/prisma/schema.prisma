@@ -24,6 +24,7 @@ model User {
   createdCharacters Character[]
 
   createdLocations Location[]
+  createdFactions Faction[]
 }
 
 enum SystemRole {
@@ -48,6 +49,8 @@ model Project {
   characters Character[]
 
   locations Location[]
+
+  factions Faction[]
 }
 
 model ProjectMember {
@@ -91,6 +94,8 @@ model Character {
   @@map("characters")
 
   locations CharacterLocation[]
+
+  factions CharacterFaction[]
 }
 
 enum Alignment {
@@ -135,4 +140,38 @@ model CharacterLocation {
 
   @@unique([characterId, locationId, type])
   @@map("character_locations")
+}
+
+model Faction {
+  id          BigInt   @id @default(autoincrement())
+  projectId   BigInt   @map("project_id")
+  name        String   @db.VarChar(100)
+  symbol      String?  @db.VarChar(255)
+  description String?  @db.Text
+  history     String?  @db.Text
+  leader      String?  @db.VarChar(150)
+  territory   String?  @db.VarChar(150)
+  createdBy   BigInt   @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  project            Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  author             User               @relation(fields: [createdBy], references: [id])
+  characterFactions  CharacterFaction[]
+
+  @@index([projectId])
+  @@map("factions")
+}
+
+model CharacterFaction {
+  id          BigInt  @id @default(autoincrement())
+  characterId BigInt  @map("character_id")
+  factionId   BigInt  @map("faction_id")
+  role        String? @db.VarChar(50)
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  faction   Faction   @relation(fields: [factionId], references: [id], onDelete: Cascade)
+
+  @@unique([characterId, factionId])
+  @@map("character_factions")
 }

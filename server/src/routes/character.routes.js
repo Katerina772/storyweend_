@@ -3,6 +3,7 @@ import * as characterController from "../controllers/character.controller.js";
 import { requireAuth } from "../middleware/auth.middleware.js";
 import { requireProjectRole } from "../middleware/projectRole.middleware.js";
 import * as locationController from "../controllers/location.controller.js";
+import * as factionController from "../controllers/faction.controller.js";
 
 const router = Router({ mergeParams: true });
 
@@ -36,6 +37,13 @@ router.get(
   "/:characterId/locations",
   requireProjectRole("VIEWER"),
   locationController.listLinksForCharacter,
+);
+
+// Фракції конкретного персонажа
+router.get(
+  "/:characterId/factions",
+  requireProjectRole("VIEWER"),
+  factionController.listFactionsForCharacter,
 );
 
 export default router;

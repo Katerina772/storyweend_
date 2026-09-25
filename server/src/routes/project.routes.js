@@ -5,6 +5,7 @@ import { requireAuth } from "../middleware/auth.middleware.js";
 import { requireProjectRole } from "../middleware/projectRole.middleware.js";
 import characterRoutes from "./character.routes.js";
 import locationRoutes from "./location.routes.js";
+import factionRoutes from "./faction.routes.js";
 
 const router = Router();
 
@@ -44,5 +45,6 @@ router.delete(
 // Персонажі всередині проєкту
 router.use("/:projectId/characters", characterRoutes);
 router.use("/:projectId/locations", locationRoutes);
+router.use("/:projectId/factions", factionRoutes);
 
 export default router;
