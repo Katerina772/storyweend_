@@ -4,6 +4,7 @@ import { requireAuth } from "../middleware/auth.middleware.js";
 import { requireProjectRole } from "../middleware/projectRole.middleware.js";
 import * as locationController from "../controllers/location.controller.js";
 import * as factionController from "../controllers/faction.controller.js";
+import * as eventController from "../controllers/event.controller.js";
 
 const router = Router({ mergeParams: true });
 
@@ -44,6 +45,13 @@ router.get(
   "/:characterId/factions",
   requireProjectRole("VIEWER"),
   factionController.listFactionsForCharacter,
+);
+
+// Події конкретного персонажа
+router.get(
+  "/:characterId/events",
+  requireProjectRole("VIEWER"),
+  eventController.listEventsForCharacter,
 );
 
 export default router;

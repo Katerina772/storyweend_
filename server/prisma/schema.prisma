@@ -25,6 +25,7 @@ model User {
 
   createdLocations Location[]
   createdFactions Faction[]
+  createdEvents Event[]
 }
 
 enum SystemRole {
@@ -51,6 +52,8 @@ model Project {
   locations Location[]
 
   factions Faction[]
+
+  events Event[]
 }
 
 model ProjectMember {
@@ -96,6 +99,8 @@ model Character {
   locations CharacterLocation[]
 
   factions CharacterFaction[]
+
+  events EventCharacter[]
 }
 
 enum Alignment {
@@ -127,6 +132,8 @@ model Location {
   @@index([projectId])
   @@index([parentId])
   @@map("locations")
+  
+  events Event[]
 }
 
 model CharacterLocation {
@@ -174,4 +181,38 @@ model CharacterFaction {
 
   @@unique([characterId, factionId])
   @@map("character_factions")
+}
+
+model Event {
+  id          BigInt   @id @default(autoincrement())
+  projectId   BigInt   @map("project_id")
+  title       String   @db.VarChar(150)
+  date        String?  @db.VarChar(100)
+  description String?  @db.Text
+  locationId  BigInt?  @map("location_id")
+  createdBy   BigInt   @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  project    Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  location   Location?        @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  author     User             @relation(fields: [createdBy], references: [id])
+  characters EventCharacter[]
+
+  @@index([projectId])
+  @@index([locationId])
+  @@map("events")
+}
+
+model EventCharacter {
+  id          BigInt  @id @default(autoincrement())
+  eventId     BigInt  @map("event_id")
+  characterId BigInt  @map("character_id")
+  role        String? @db.VarChar(50)
+
+  event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, characterId])
+  @@map("event_characters")
 }
