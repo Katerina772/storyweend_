@@ -9,6 +9,7 @@ import factionRoutes from "./faction.routes.js";
 import eventRoutes from "./event.routes.js";
 import loreRoutes from "./lore.routes.js";
 import relationRoutes from "./relation.routes.js";
+import mapRoutes from "./map.routes.js";
 
 const router = Router();
 
@@ -52,5 +53,6 @@ router.use("/:projectId/factions", factionRoutes);
 router.use("/:projectId/events", eventRoutes);
 router.use("/:projectId/lore", loreRoutes);
 router.use("/:projectId/relations", relationRoutes);
+router.use("/:projectId/map", mapRoutes);
 
 export default router;
