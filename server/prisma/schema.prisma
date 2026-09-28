@@ -57,6 +57,8 @@ model Project {
   events Event[]
 
   loreEntries LoreEntry[]
+
+  relations CharacterRelation[]
 }
 
 model ProjectMember {
@@ -104,6 +106,9 @@ model Character {
   factions CharacterFaction[]
 
   events EventCharacter[]
+
+  relationsFrom CharacterRelation[] @relation("RelationFrom")
+relationsTo   CharacterRelation[] @relation("RelationTo")
 }
 
 enum Alignment {
@@ -236,4 +241,37 @@ model LoreEntry {
   @@index([projectId])
   @@index([category])
   @@map("lore_entries")
+  
+}
+
+model CharacterRelation {
+  id              BigInt       @id @default(autoincrement())
+  projectId       BigInt       @map("project_id")
+  characterFromId BigInt       @map("character_from_id")
+  characterToId   BigInt       @map("character_to_id")
+  type            RelationType
+  description     String?      @db.Text
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  project       Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  characterFrom Character @relation("RelationFrom", fields: [characterFromId], references: [id], onDelete: Cascade)
+  characterTo   Character @relation("RelationTo", fields: [characterToId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, characterFromId, characterToId, type])
+  @@index([projectId])
+  @@index([characterFromId])
+  @@index([characterToId])
+  @@map("character_relations")
+}
+
+enum RelationType {
+  FRIEND
+  ENEMY
+  FAMILY
+  ALLY
+  RIVAL
+  MENTOR
+  ROMANTIC
+  OTHER
 }
