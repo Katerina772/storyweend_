@@ -26,6 +26,7 @@ model User {
   createdLocations Location[]
   createdFactions Faction[]
   createdEvents Event[]
+  createdLoreEntries LoreEntry[]
 }
 
 enum SystemRole {
@@ -54,6 +55,8 @@ model Project {
   factions Faction[]
 
   events Event[]
+
+  loreEntries LoreEntry[]
 }
 
 model ProjectMember {
@@ -215,4 +218,22 @@ model EventCharacter {
 
   @@unique([eventId, characterId])
   @@map("event_characters")
+}
+
+model LoreEntry {
+  id        BigInt   @id @default(autoincrement())
+  projectId BigInt   @map("project_id")
+  title     String   @db.VarChar(150)
+  category  String?  @db.VarChar(50)
+  content   String?  @db.Text
+  createdBy BigInt   @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  author  User    @relation(fields: [createdBy], references: [id])
+
+  @@index([projectId])
+  @@index([category])
+  @@map("lore_entries")
 }

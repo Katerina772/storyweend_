@@ -7,6 +7,7 @@ import characterRoutes from "./character.routes.js";
 import locationRoutes from "./location.routes.js";
 import factionRoutes from "./faction.routes.js";
 import eventRoutes from "./event.routes.js";
+import loreRoutes from "./lore.routes.js";
 
 const router = Router();
 
@@ -48,5 +49,6 @@ router.use("/:projectId/characters", characterRoutes);
 router.use("/:projectId/locations", locationRoutes);
 router.use("/:projectId/factions", factionRoutes);
 router.use("/:projectId/events", eventRoutes);
+router.use("/:projectId/lore", loreRoutes);
 
 export default router;
