@@ -2,6 +2,7 @@ import prisma from "../config/prisma.js";
 import { hashPassword, comparePassword } from "../utils/password.js";
 import { signToken } from "../utils/jwt.js";
 import { ApiError } from "../utils/ApiError.js";
+import * as logService from "./activityLog.service.js";
 
 export async function registerUser({ username, email, password }) {
   const existing = await prisma.user.findFirst({
@@ -26,6 +27,13 @@ export async function registerUser({ username, email, password }) {
     },
   });
 
+  await logService.log({
+    userId: user.id.toString(),
+    action: "USER_REGISTERED",
+    entityType: "user",
+    entityId: user.id.toString(),
+  });
+
   const token = signToken({ userId: user.id.toString(), role: user.role });
 
   return { user, token };
@@ -41,6 +49,13 @@ export async function loginUser({ email, password }) {
   if (!ok) {
     throw new ApiError(401, "Invalid credentials");
   }
+
+  await logService.log({
+    userId: user.id.toString(),
+    action: "USER_LOGIN",
+    entityType: "user",
+    entityId: user.id.toString(),
+  });
 
   const token = signToken({ userId: user.id.toString(), role: user.role });
 

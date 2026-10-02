@@ -1,5 +1,6 @@
 import prisma from "../config/prisma.js";
 import { ApiError } from "../utils/ApiError.js";
+import * as logService from "./activityLog.service.js";
 
 const PROJECT_SELECT = {
   id: true,
@@ -7,6 +8,7 @@ const PROJECT_SELECT = {
   name: true,
   description: true,
   coverImage: true,
+  mapImageUrl: true,
   createdAt: true,
   updatedAt: true,
   owner: {
@@ -18,23 +20,33 @@ const PROJECT_SELECT = {
 };
 
 export async function createProject(userId, data) {
-  const project = await prisma.project.create({
-    data: {
-      ownerId: BigInt(userId),
-      name: data.name,
-      description: data.description ?? null,
-      coverImage: data.coverImage ?? null,
-    },
-    select: PROJECT_SELECT,
+  const project = await prisma.$transaction(async (tx) => {
+    const created = await tx.project.create({
+      data: {
+        ownerId: BigInt(userId),
+        name: data.name,
+        description: data.description ?? null,
+        coverImage: data.coverImage ?? null,
+      },
+      select: PROJECT_SELECT,
+    });
+
+    await tx.projectMember.create({
+      data: {
+        projectId: created.id,
+        userId: BigInt(userId),
+        role: "OWNER",
+      },
+    });
+
+    return created;
   });
 
-  // Автоматично додаємо власника як учасника з роллю OWNER
-  await prisma.projectMember.create({
-    data: {
-      projectId: project.id,
-      userId: BigInt(userId),
-      role: "OWNER",
-    },
+  await logService.log({
+    userId: userId.toString(),
+    action: "PROJECT_CREATED",
+    entityType: "project",
+    entityId: project.id.toString(),
   });
 
   return project;

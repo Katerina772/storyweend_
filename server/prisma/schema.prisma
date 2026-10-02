@@ -27,6 +27,8 @@ model User {
   createdFactions Faction[]
   createdEvents Event[]
   createdLoreEntries LoreEntry[]
+
+  activityLogs ActivityLog[]
 }
 
 enum SystemRole {
@@ -296,4 +298,35 @@ model MapMarker {
   @@unique([locationId])
   @@index([projectId])
   @@map("map_markers")
+}
+
+model ActivityLog {
+  id         BigInt       @id @default(autoincrement())
+  userId     BigInt?      @map("user_id")
+  action     LogAction
+  entityType String?      @map("entity_type") @db.VarChar(50)
+  entityId   BigInt?      @map("entity_id")
+  metadata   Json?
+  ipAddress  String?      @map("ip_address") @db.VarChar(45)
+  createdAt  DateTime     @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("activity_logs")
+}
+
+enum LogAction {
+  USER_REGISTERED
+  USER_LOGIN
+  USER_BLOCKED
+  USER_UNBLOCKED
+  USER_ROLE_CHANGED
+  PROJECT_CREATED
+  PROJECT_DELETED
+  PROJECT_MEMBER_ADDED
+  PROJECT_MEMBER_REMOVED
+  ADMIN_SETTINGS_CHANGED
 }
