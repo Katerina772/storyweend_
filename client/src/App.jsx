@@ -1,0 +1,14 @@
+function App() {
+  return (
+    <div className="min-h-screen bg-slate-900 text-slate-100 flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-5xl font-bold mb-4">StoryWeend</h1>
+        <p className="text-slate-400">
+          Платформа для проєктування вигаданих світів
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default App;

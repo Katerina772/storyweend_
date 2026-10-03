@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+/* Кастомні стилі (опційно) */
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+}
