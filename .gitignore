@@ -32,3 +32,7 @@ Thumbs.db
 # AI service
 ai-service/venv/
 ai-service/.venv/
+
+# Frontend
+client/node_modules/
+client/dist/
