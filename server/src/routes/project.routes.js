@@ -10,6 +10,8 @@ import eventRoutes from "./event.routes.js";
 import loreRoutes from "./lore.routes.js";
 import relationRoutes from "./relation.routes.js";
 import mapRoutes from "./map.routes.js";
+import searchRoutes from "./search.routes.js";
+import exportRoutes from "./export.routes.js";
 
 const router = Router();
 
@@ -54,5 +56,7 @@ router.use("/:projectId/events", eventRoutes);
 router.use("/:projectId/lore", loreRoutes);
 router.use("/:projectId/relations", relationRoutes);
 router.use("/:projectId/map", mapRoutes);
+router.use("/:projectId/search", searchRoutes);
+router.use("/:projectId/export", exportRoutes);
 
 export default router;
