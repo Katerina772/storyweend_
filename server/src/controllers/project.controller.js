@@ -62,3 +62,12 @@ export async function remove(req, res, next) {
     next(err);
   }
 }
+
+export async function overview(req, res, next) {
+  try {
+    const data = await projectService.getProjectOverview(req.params.projectId);
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
+}

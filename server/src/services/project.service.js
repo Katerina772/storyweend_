@@ -103,3 +103,40 @@ export async function deleteProject(projectId) {
   await prisma.project.delete({ where: { id: BigInt(projectId) } });
   return { success: true };
 }
+
+export async function getProjectOverview(projectId) {
+  const pid = BigInt(projectId);
+
+  const [
+    characters,
+    locations,
+    factions,
+    events,
+    loreEntries,
+    members,
+    relations,
+    mapMarkers,
+  ] = await Promise.all([
+    prisma.character.count({ where: { projectId: pid } }),
+    prisma.location.count({ where: { projectId: pid } }),
+    prisma.faction.count({ where: { projectId: pid } }),
+    prisma.event.count({ where: { projectId: pid } }),
+    prisma.loreEntry.count({ where: { projectId: pid } }),
+    prisma.projectMember.count({ where: { projectId: pid } }),
+    prisma.characterRelation.count({ where: { projectId: pid } }),
+    prisma.mapMarker.count({ where: { projectId: pid } }),
+  ]);
+
+  return {
+    counts: {
+      characters,
+      locations,
+      factions,
+      events,
+      loreEntries,
+      members,
+      relations,
+      mapMarkers,
+    },
+  };
+}

@@ -18,10 +18,32 @@ const router = Router();
 // Усі роути проєктів потребують автентифікації
 router.use(requireAuth);
 
+// // Проєкти
+// router.post("/", projectController.create);
+// router.get("/mine", projectController.listMine);
+// router.get("/shared", projectController.listShared);
+// router.get(
+//   "/:projectId/overview",
+//   requireProjectRole("VIEWER"),
+//   projectController.overview,
+// );
+// router.get("/:id", projectController.getOne);
+// router.put("/:id", requireProjectRole("EDITOR"), projectController.update);
+// router.delete("/:id", requireProjectRole("OWNER"), projectController.remove);
+
 // Проєкти
 router.post("/", projectController.create);
 router.get("/mine", projectController.listMine);
 router.get("/shared", projectController.listShared);
+
+// Overview — ОБОВ'ЯЗКОВО ПЕРЕД /:id
+router.get(
+  "/:projectId/overview",
+  requireProjectRole("VIEWER"),
+  projectController.overview,
+);
+
+// CRUD
 router.get("/:id", projectController.getOne);
 router.put("/:id", requireProjectRole("EDITOR"), projectController.update);
 router.delete("/:id", requireProjectRole("OWNER"), projectController.remove);

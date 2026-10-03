@@ -21,4 +21,7 @@ export const projectsApi = {
     api
       .delete(`/projects/${projectId}/members/${memberId}`)
       .then((r) => r.data),
+
+  overview: (projectId) =>
+    api.get(`/projects/${projectId}/overview`).then((r) => r.data),
 };
