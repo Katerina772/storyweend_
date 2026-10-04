@@ -22,6 +22,7 @@ import MapPage from "../pages/project/MapPage.jsx";
 import MembersPage from "../pages/project/MembersPage.jsx";
 import ProjectSettingsPage from "../pages/project/ProjectSettingsPage.jsx";
 import HomePage from "../pages/public/HomePage.jsx";
+import CharacterDetailPage from "../pages/project/CharacterDetailPage.jsx";
 
 export function AppRouter() {
   return (
@@ -49,6 +50,10 @@ export function AppRouter() {
         <Route path="/projects/:projectId" element={<ProjectLayout />}>
           <Route index element={<OverviewPage />} />
           <Route path="characters" element={<CharactersPage />} />
+          <Route
+            path="characters/:characterId"
+            element={<CharacterDetailPage />}
+          />
           <Route path="locations" element={<LocationsPage />} />
           <Route path="relations" element={<RelationsPage />} />
           <Route path="factions" element={<FactionsPage />} />
