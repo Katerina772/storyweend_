@@ -23,4 +23,18 @@ export const locationsApi = {
     api
       .get(`/projects/${projectId}/locations/${locationId}/children`)
       .then((r) => r.data),
+
+  // Зв’язки персонаж-локація
+  linkCharacter: (projectId, data) =>
+    api
+      .post(`/projects/${projectId}/locations/links`, data)
+      .then((r) => r.data),
+  listLinksForLocation: (projectId, locationId) =>
+    api
+      .get(`/projects/${projectId}/locations/${locationId}/characters`)
+      .then((r) => r.data),
+  deleteLink: (projectId, linkId) =>
+    api
+      .delete(`/projects/${projectId}/locations/links/${linkId}`)
+      .then((r) => r.data),
 };
