@@ -6,6 +6,7 @@ import { Button } from "../../components/ui/Button.jsx";
 import { Badge } from "../../components/ui/Badge.jsx";
 import { Loader } from "../../components/ui/Loader.jsx";
 import { Modal } from "../../components/ui/Modal.jsx";
+import { usePermissions } from "../../hooks/usePermissions.js";
 
 const ALIGNMENT_MAP = {
   POSITIVE: { label: "Позитивний", color: "green" },
@@ -16,6 +17,7 @@ const ALIGNMENT_MAP = {
 export default function CharacterDetailPage() {
   const { projectId, characterId } = useParams();
   const navigate = useNavigate();
+  const { canEdit, canDelete } = usePermissions();
 
   const [character, setCharacter] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -118,14 +120,21 @@ export default function CharacterDetailPage() {
           </div>
         </div>
 
-        <div className="flex gap-2">
-          <Button variant="secondary" onClick={() => setEditOpen(true)}>
-            Редагувати
-          </Button>
-          <Button variant="danger" onClick={() => setDeleteOpen(true)}>
-            Видалити
-          </Button>
-        </div>
+        {/* Кнопки дій */}
+        {(canEdit || canDelete) && (
+          <div className="flex gap-2">
+            {canEdit && (
+              <Button variant="secondary" onClick={() => setEditOpen(true)}>
+                Редагувати
+              </Button>
+            )}
+            {canDelete && (
+              <Button variant="danger" onClick={() => setDeleteOpen(true)}>
+                Видалити
+              </Button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Опис */}

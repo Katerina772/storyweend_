@@ -71,6 +71,22 @@ export async function listSharedProjects(userId) {
   });
 }
 
+// export async function getProjectById(projectId, userId) {
+//   const project = await prisma.project.findFirst({
+//     where: {
+//       id: BigInt(projectId),
+//       OR: [
+//         { ownerId: BigInt(userId) },
+//         { members: { some: { userId: BigInt(userId) } } },
+//       ],
+//     },
+//     select: PROJECT_SELECT,
+//   });
+
+//   if (!project) throw new ApiError(404, "Project not found or access denied");
+//   return project;
+// }
+
 export async function getProjectById(projectId, userId) {
   const project = await prisma.project.findFirst({
     where: {
@@ -84,7 +100,24 @@ export async function getProjectById(projectId, userId) {
   });
 
   if (!project) throw new ApiError(404, "Project not found or access denied");
-  return project;
+
+  // Визначаємо роль поточного користувача в проєкті
+  let currentUserRole = null;
+  if (project.ownerId === BigInt(userId)) {
+    currentUserRole = "OWNER";
+  } else {
+    const member = await prisma.projectMember.findUnique({
+      where: {
+        projectId_userId: {
+          projectId: BigInt(projectId),
+          userId: BigInt(userId),
+        },
+      },
+    });
+    currentUserRole = member?.role || null;
+  }
+
+  return { ...project, currentUserRole };
 }
 
 export async function updateProject(projectId, data) {
