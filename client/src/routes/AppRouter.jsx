@@ -24,6 +24,7 @@ import ProjectSettingsPage from "../pages/project/ProjectSettingsPage.jsx";
 import HomePage from "../pages/public/HomePage.jsx";
 import CharacterDetailPage from "../pages/project/CharacterDetailPage.jsx";
 import LocationDetailPage from "../pages/project/LocationDetailPage.jsx";
+import FactionDetailPage from "../pages/project/FactionDetailPage.jsx";
 
 export function AppRouter() {
   return (
@@ -62,6 +63,7 @@ export function AppRouter() {
           />
           <Route path="relations" element={<RelationsPage />} />
           <Route path="factions" element={<FactionsPage />} />
+          <Route path="factions/:factionId" element={<FactionDetailPage />} />
           <Route path="timeline" element={<TimelinePage />} />
           <Route path="lore" element={<LorePage />} />
           <Route path="map" element={<MapPage />} />

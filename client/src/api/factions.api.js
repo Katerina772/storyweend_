@@ -17,4 +17,20 @@ export const factionsApi = {
     api
       .delete(`/projects/${projectId}/factions/${factionId}`)
       .then((r) => r.data),
+
+  // Зв’язки персонаж-фракція
+  addCharacter: (projectId, data) =>
+    api.post(`/projects/${projectId}/factions/links`, data).then((r) => r.data),
+  listCharactersForFaction: (projectId, factionId) =>
+    api
+      .get(`/projects/${projectId}/factions/${factionId}/characters`)
+      .then((r) => r.data),
+  updateLink: (projectId, linkId, role) =>
+    api
+      .put(`/projects/${projectId}/factions/links/${linkId}`, { role })
+      .then((r) => r.data),
+  deleteLink: (projectId, linkId) =>
+    api
+      .delete(`/projects/${projectId}/factions/links/${linkId}`)
+      .then((r) => r.data),
 };
