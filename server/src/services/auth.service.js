@@ -89,3 +89,52 @@ export async function getCurrentUser(userId) {
   if (!user) throw new ApiError(404, "User not found");
   return user;
 }
+
+export async function updateCurrentUser(userId, data) {
+  const updateData = {};
+
+  if (data.username !== undefined) {
+    const username = String(data.username).trim();
+    if (username.length < 3) {
+      throw new ApiError(400, "Username must be at least 3 characters");
+    }
+    if (username.length > 50) {
+      throw new ApiError(400, "Username must be at most 50 characters");
+    }
+    // Перевірка унікальності
+    const existing = await prisma.user.findFirst({
+      where: {
+        username,
+        NOT: { id: BigInt(userId) },
+      },
+    });
+    if (existing) {
+      throw new ApiError(409, "Username is already taken");
+    }
+    updateData.username = username;
+  }
+
+  if (data.avatar !== undefined) {
+    updateData.avatar = data.avatar ? String(data.avatar).trim() : null;
+  }
+
+  if (data.bio !== undefined) {
+    updateData.bio = data.bio ? String(data.bio).trim() : null;
+  }
+
+  const user = await prisma.user.update({
+    where: { id: BigInt(userId) },
+    data: updateData,
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      avatar: true,
+      bio: true,
+      role: true,
+      createdAt: true,
+    },
+  });
+
+  return user;
+}

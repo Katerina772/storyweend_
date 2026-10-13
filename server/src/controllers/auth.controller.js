@@ -32,3 +32,12 @@ export async function me(req, res, next) {
     next(err);
   }
 }
+
+export async function updateMe(req, res, next) {
+  try {
+    const user = await authService.updateCurrentUser(req.userId, req.body);
+    res.json({ user });
+  } catch (err) {
+    next(err);
+  }
+}

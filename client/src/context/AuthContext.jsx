@@ -155,6 +155,13 @@ export function AuthProvider({ children }) {
     setUser(null);
   }, []);
 
+  const updateUser = useCallback(async (data) => {
+    const { user } = await authApi.updateMe(data);
+    localStorage.setItem("user", JSON.stringify(user));
+    setUser(user);
+    return user;
+  }, []);
+
   const value = {
     user,
     loading,
@@ -163,6 +170,7 @@ export function AuthProvider({ children }) {
     login,
     register,
     logout,
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
